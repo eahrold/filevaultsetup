@@ -22,6 +22,8 @@
 #import <Cocoa/Cocoa.h>
 #import "FVSSetupWindowController.h"
 #import "FVSConstants.h"
+#import "Interfaces.h"
+
 
 @interface FVSAppDelegate : NSObject <NSApplicationDelegate> {
     FVSSetupWindowController *setupController;

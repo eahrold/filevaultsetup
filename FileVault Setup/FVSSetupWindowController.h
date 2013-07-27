@@ -23,6 +23,7 @@
 #import <QuartzCore/CoreAnimation.h>
 #import <OpenDirectory/OpenDirectory.h>
 #import "FVSConstants.h"
+#import "Interfaces.h"
 
 @interface FVSSetupWindowController : NSWindowController {
     NSString *username;

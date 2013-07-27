@@ -21,7 +21,24 @@
 		1993381416E6F7000029B411 /* FVSSetupWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1993381216E6F7000029B411 /* FVSSetupWindowController.xib */; };
 		19EE18F316F6DD3F00134C7B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19EE18F216F6DD3F00134C7B /* IOKit.framework */; };
 		19EE18F516F6DDE800134C7B /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19EE18F416F6DDE800134C7B /* DiskArbitration.framework */; };
+		BEF0DC9117A3557C00B66527 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEF0DC9017A3557C00B66527 /* Foundation.framework */; };
+		BEF0DC9417A3557C00B66527 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF0DC9317A3557C00B66527 /* main.m */; };
+		BEF0DCA017A3574000B66527 /* FVSHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF0DC9F17A3573F00B66527 /* FVSHelper.m */; };
+		BEF0DCA417A3BCBC00B66527 /* ca.sfu.its.filevaultsetup.helper in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEF0DC8F17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BEF0DCA317A3BCA600B66527 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchServices;
+			dstSubfolderSpec = 7;
+			files = (
+				BEF0DCA417A3BCBC00B66527 /* ca.sfu.its.filevaultsetup.helper in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		190C608D1708188300EC3927 /* OpenDirectory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenDirectory.framework; path = System/Library/Frameworks/OpenDirectory.framework; sourceTree = SDKROOT; };
@@ -47,6 +64,15 @@
 		1993381216E6F7000029B411 /* FVSSetupWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FVSSetupWindowController.xib; sourceTree = "<group>"; };
 		19EE18F216F6DD3F00134C7B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		19EE18F416F6DDE800134C7B /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
+		BEF0DC8F17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ca.sfu.its.filevaultsetup.helper; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEF0DC9017A3557C00B66527 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BEF0DC9317A3557C00B66527 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BEF0DC9617A3557C00B66527 /* helper-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "helper-Prefix.pch"; sourceTree = "<group>"; };
+		BEF0DC9C17A355C300B66527 /* Interfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interfaces.h; sourceTree = "<group>"; };
+		BEF0DC9E17A3573F00B66527 /* FVSHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVSHelper.h; sourceTree = "<group>"; };
+		BEF0DC9F17A3573F00B66527 /* FVSHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVSHelper.m; sourceTree = "<group>"; };
+		BEF0DCA117A3B7FB00B66527 /* FVSHelper-Launchd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FVSHelper-Launchd.plist"; sourceTree = "<group>"; };
+		BEF0DCA217A3B89800B66527 /* FVSHelper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FVSHelper-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,13 +89,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BEF0DC8C17A3557C00B66527 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEF0DC9117A3557C00B66527 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		199337E516E6EE030029B411 = {
 			isa = PBXGroup;
 			children = (
+				BEF0DC9D17A355DD00B66527 /* Interfaces */,
 				199337F716E6EE030029B411 /* FileVault Setup */,
+				BEF0DC9217A3557C00B66527 /* helper */,
 				199337F016E6EE030029B411 /* Frameworks */,
 				199337EF16E6EE030029B411 /* Products */,
 			);
@@ -79,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				199337EE16E6EE030029B411 /* FileVault Setup.app */,
+				BEF0DC8F17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,6 +129,7 @@
 				1947B45C16ED84A0008DC1D6 /* SystemConfiguration.framework */,
 				190C72F616EBC5D400C589CB /* QuartzCore.framework */,
 				199337F116E6EE030029B411 /* Cocoa.framework */,
+				BEF0DC9017A3557C00B66527 /* Foundation.framework */,
 				199337F316E6EE030029B411 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -135,6 +173,36 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		BEF0DC9217A3557C00B66527 /* helper */ = {
+			isa = PBXGroup;
+			children = (
+				BEF0DC9E17A3573F00B66527 /* FVSHelper.h */,
+				BEF0DC9F17A3573F00B66527 /* FVSHelper.m */,
+				BEF0DC9517A3557C00B66527 /* Supporting Files */,
+			);
+			path = helper;
+			sourceTree = "<group>";
+		};
+		BEF0DC9517A3557C00B66527 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BEF0DCA217A3B89800B66527 /* FVSHelper-Info.plist */,
+				BEF0DCA117A3B7FB00B66527 /* FVSHelper-Launchd.plist */,
+				BEF0DC9317A3557C00B66527 /* main.m */,
+				BEF0DC9617A3557C00B66527 /* helper-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BEF0DC9D17A355DD00B66527 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				BEF0DC9C17A355C300B66527 /* Interfaces.h */,
+			);
+			name = Interfaces;
+			path = helper;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -145,6 +213,8 @@
 				199337EA16E6EE030029B411 /* Sources */,
 				199337EB16E6EE030029B411 /* Frameworks */,
 				199337EC16E6EE030029B411 /* Resources */,
+				BE8642A917A403CC008F523C /* ShellScript */,
+				BEF0DCA317A3BCA600B66527 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -154,6 +224,23 @@
 			productName = "FileVault Setup";
 			productReference = 199337EE16E6EE030029B411 /* FileVault Setup.app */;
 			productType = "com.apple.product-type.application";
+		};
+		BEF0DC8E17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BEF0DC9B17A3557C00B66527 /* Build configuration list for PBXNativeTarget "ca.sfu.its.filevaultsetup.helper" */;
+			buildPhases = (
+				BE8642A817A403AA008F523C /* ShellScript */,
+				BEF0DC8B17A3557C00B66527 /* Sources */,
+				BEF0DC8C17A3557C00B66527 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ca.sfu.its.filevaultsetup.helper;
+			productName = helper;
+			productReference = BEF0DC8F17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -178,6 +265,7 @@
 			projectRoot = "";
 			targets = (
 				199337ED16E6EE030029B411 /* FileVault Setup */,
+				BEF0DC8E17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */,
 			);
 		};
 /* End PBXProject section */
@@ -197,6 +285,35 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		BE8642A817A403AA008F523C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env ruby";
+			shellScript = "# Generic preprocessing for ${ENV_VAR} with output to the build dir.\n\nrequire 'cgi'\nrequire 'fileutils'\n\nmissing_keys = ['BUILD_DIR', 'CODE_SIGN_IDENTITY', 'PREPROCESS_FILES', 'PREPROCESS_DIR'] - ENV.keys\nraise \"Missing required ENV values: #{missing_keys.inspect}\" if missing_keys.size > 0\n\n# SMJ_PREPROCESS_FILES is a comma-separated list of *relative* file paths to preprocess\n#  and spit out into the SMJ_PREPROCESS_DIR (w/ the same relative paths as given)\nfiles_to_preprocess = ENV['PREPROCESS_FILES'].split(',').map(&:strip)\n\n\n# Environment Cleanup\n# -------------------\ndummy_path = \"#{ENV['BUILD_DIR']}/CodeSigningDummy\"\n\nidentity = ENV['CODE_SIGN_IDENTITY']\n# If you use the generic code signing identity, chances are that it'll conflict.\nidentity = \"#{identity}:\" if identity.end_with? ' Developer'\n\n# We can't seem to get direct access to the code signing certificate that Xcode has\n# selected at this point :(\n`touch #{dummy_path}`\n`codesign --force --sign \"#{identity}\" \"#{dummy_path}\"`\nresult = `codesign --display --verbose --verbose \"#{dummy_path}\" 2>&1`\n`rm #{dummy_path}`\n\nENV['FULL_CODE_SIGN_IDENTITY'] = result[/Authority\\=(.*#{Regexp.escape(identity)}.*)/, 1]\n\n\n# Actual Preprocessing\n# --------------------\n\nfiles_to_preprocess.each do |path|\ntarget_path = File.join(ENV['PREPROCESS_DIR'], path)\nFileUtils.mkpath File.dirname(target_path)\n\nopen(path) do |input|\nopen(target_path, 'w') do |output|\n# Specify macros via ${VAR_NAME} in the preprocessed file.  Same as regular\n# Info.plist preprocessing.\noutput.write input.read.gsub(/\\$\\{([A-Z_]+)\\}/) { CGI.escapeHTML(ENV[$1]) }\nend\nputs target_path\nend\nend";
+		};
+		BE8642A917A403CC008F523C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env ruby";
+			shellScript = "# Postprocessing for your info.plist.  Primarily so that we can inject your full dev certificate name.\n\nrequire 'cgi'\nrequire 'fileutils'\n\nmissing_keys = ['BUILD_DIR', 'CODE_SIGN_IDENTITY', 'TARGET_BUILD_DIR', 'INFOPLIST_PATH'] - ENV.keys\nraise \"Missing required ENV values: #{missing_keys.inspect}\" if missing_keys.size > 0\n\nfiles_to_postprocess = [ENV['INFOPLIST_PATH']]\n\n\n# FULL_CODE_SIGN_IDENTITY\n# -----------------------\ndummy_path = \"#{ENV['BUILD_DIR']}/CodeSigningDummy\"\n\nidentity = ENV['CODE_SIGN_IDENTITY']\n# If you use the generic code signing identity, chances are that it'll conflict.\nidentity = \"#{identity}:\" if identity.end_with? ' Developer'\n\n# We can't seem to get direct access to the code signing certificate that Xcode has\n# selected at this point :(\n`touch #{dummy_path}`\n`codesign --force --sign \"#{identity}\" \"#{dummy_path}\"`\nresult = `codesign --display --verbose --verbose \"#{dummy_path}\" 2>&1`\n`rm #{dummy_path}`\n\nENV['FULL_CODE_SIGN_IDENTITY'] = result[/Authority\\=(.*#{Regexp.escape(identity)}.*)/, 1]\n\n\n# Actual Preprocessing\n# --------------------\n\nfiles_to_postprocess.each do |path|\ntarget_path = File.join(ENV['TARGET_BUILD_DIR'], path)\n\ninput = open(target_path).read\nopen(target_path, 'w') do |output|\n# Specify macros via [[[VAR_NAME]]] to avoid clashes w/ regular plist preprocessing.\noutput.write input.gsub(/\\[\\[\\[([A-Z_]+)\\]\\]\\]/) { CGI.escapeHTML(ENV[$1]) }\nend\nend";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		199337EA16E6EE030029B411 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -205,6 +322,15 @@
 				199337FE16E6EE030029B411 /* main.m in Sources */,
 				1993380516E6EE030029B411 /* FVSAppDelegate.m in Sources */,
 				1993381316E6F7000029B411 /* FVSSetupWindowController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEF0DC8B17A3557C00B66527 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEF0DC9417A3557C00B66527 /* main.m in Sources */,
+				BEF0DCA017A3574000B66527 /* FVSHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,11 +426,13 @@
 		1993380C16E6EE030029B411 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FileVault Setup/FileVault Setup-Prefix.pch";
 				INFOPLIST_FILE = "FileVault Setup/FileVault Setup-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -312,12 +440,68 @@
 		1993380D16E6EE030029B411 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FileVault Setup/FileVault Setup-Prefix.pch";
 				INFOPLIST_FILE = "FileVault Setup/FileVault Setup-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		BEF0DC9917A3557C00B66527 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "helper/helper-Prefix.pch";
+				INFOPLIST_FILE = "helper/FVSHelper-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
+				INSTALL_PATH = /Library/PrivilegedHelperTools;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"helper/FVSHelper-Info.plist",
+					"-sectcreate",
+					__TEXT,
+					__launchd_plist,
+					"helper/FVSHelper-Launchd.plist",
+				);
+				PARENT_APPLICATION_IDENTIFIER = ca.sfu.its.filevaultsetup;
+				PREPROCESS_DIR = "$(BUILD_DIR)/Preprocessed";
+				PREPROCESS_FILES = "helper/FVSHelper-Info.plist, helper/FVSHelper-Launchd.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		BEF0DC9A17A3557C00B66527 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "helper/helper-Prefix.pch";
+				INFOPLIST_FILE = "helper/FVSHelper-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
+				INSTALL_PATH = /Library/PrivilegedHelperTools;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"helper/FVSHelper-Info.plist",
+					"-sectcreate",
+					__TEXT,
+					__launchd_plist,
+					"helper/FVSHelper-Launchd.plist",
+				);
+				PARENT_APPLICATION_IDENTIFIER = ca.sfu.its.filevaultsetup;
+				PREPROCESS_DIR = "$(BUILD_DIR)/Preprocessed";
+				PREPROCESS_FILES = "helper/FVSHelper-Info.plist, helper/FVSHelper-Launchd.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -338,6 +522,15 @@
 			buildConfigurations = (
 				1993380C16E6EE030029B411 /* Debug */,
 				1993380D16E6EE030029B411 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEF0DC9B17A3557C00B66527 /* Build configuration list for PBXNativeTarget "ca.sfu.its.filevaultsetup.helper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BEF0DC9917A3557C00B66527 /* Debug */,
+				BEF0DC9A17A3557C00B66527 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

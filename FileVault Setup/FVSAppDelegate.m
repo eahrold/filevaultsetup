@@ -28,28 +28,11 @@ NSString * const FVSDoNotAskForSetup     = @"FVSDoNotAskForSetup";
 NSString * const FVSForceSetup           = @"FVSForceSetup";
 NSString * const FVSUseKeychain          = @"FVSUseKeychain";
 NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
-NSString * const FVSUsername             = @"FVSUsername";
-NSString * const FVSUid                  = @"FVSUid";
 
 @implementation FVSAppDelegate
 
 + (void)initialize
 {
-    // Grab the username and the uid of the Console user
-    uid_t uid;
-    NSString *username =
-        CFBridgingRelease(SCDynamicStoreCopyConsoleUser(NULL, &uid, NULL));
-    
-    // UID Switcheroo
-    // If the app is run using a loginhook, it will have UID 0, but we want
-    // to use the NSUserDefaults for the Console user. Setting the Effective
-    // UID for the process allows us to run the app as the user.
-    int result = seteuid(uid);
-    
-    if (!result == 0) {
-        NSLog(@"Could not set UID, error: %i", result);
-        exit(result);
-    }
     
     // Register defaults
     NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
@@ -61,30 +44,21 @@ NSString * const FVSUid                  = @"FVSUid";
                       forKey:FVSUseKeychain];
     [defaultValues setObject:[NSNumber numberWithBool:YES]
                       forKey:FVSCreateRecoveryKey];
-    [defaultValues setObject:username
-                      forKey:FVSUsername];
-    [defaultValues setObject:[NSNumber numberWithInt:uid]
-                      forKey:FVSUid];
+
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultValues];
     
     // Establish the startup mode
-    // Are we root? If so, exit if the root vol already encrypted.
     // Also, hide the menu bar.
     // Is this a forced setup? If not, respect that the user has
     // opted out, and simply exit.
-    uid_t realuid = getuid();
-    if (realuid == 0) {
-        if ([FVSAppDelegate rootVolumeIsEncrypted]) {
+
+    [NSMenu setMenuBarVisible:NO];
+    if (![[[NSUserDefaults standardUserDefaults]
+          valueForKeyPath:FVSForceSetup] boolValue]) {
+        if ([[[NSUserDefaults standardUserDefaults]
+             valueForKeyPath:FVSDoNotAskForSetup] boolValue]) {
             exit(0);
-        }
-        [NSMenu setMenuBarVisible:NO];
-        if (![[[NSUserDefaults standardUserDefaults]
-              valueForKeyPath:FVSForceSetup] boolValue]) {
-            if ([[[NSUserDefaults standardUserDefaults]
-                 valueForKeyPath:FVSDoNotAskForSetup] boolValue]) {
-                exit(0);
-            }
         }
     }
 }
@@ -201,46 +175,9 @@ NSString * const FVSUid                  = @"FVSUid";
     [_window close];
 }
 
-- (void)restart
-{
-    [NSThread sleepForTimeInterval:10];
-    // UID Switcheroo
-    int switcheroo = seteuid(0);
-    
-    if (!switcheroo == 0) {
-        NSLog(@"Could not set UID, error: %i", switcheroo);
-    }
-    
-    // Task Setup
-    NSTask *theTask = [[NSTask alloc] init];
-    [theTask setLaunchPath:@"/sbin/reboot"];
-    
-    // Task Run
-    [theTask launch];
-    
-    // UID Switcheroo
-    seteuid([[[NSUserDefaults standardUserDefaults]
-              objectForKey:FVSUid] intValue]);
-    [_window close];
-}
 
 - (IBAction)enable:(id)sender
-{    
-    // Are we running as root?
-    uid_t realuid = getuid();
-
-    if (!realuid == 0) {
-        NSString *info = @"FileVault will be enabled at your next login.";
-        // ALERT
-        NSAlert *alert = [[NSAlert alloc] init];
-        [alert setMessageText:@"Requires Logout"];
-        [alert setInformativeText:info];
-        [alert beginSheetModalForWindow:_window
-                          modalDelegate:self
-                         didEndSelector:@selector(setupDidEndWithNotRoot:)
-                            contextInfo:nil];
-    }
-
+{
     [self showSetupSheet:nil];
 }
 
@@ -252,11 +189,13 @@ NSString * const FVSUid                  = @"FVSUid";
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:
     (NSApplication *)theApplication
 {
+    [self quitHelper];
     return YES;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [self startHelper];
     // Insert code here to initialize your application
     BOOL forcedSetup = [[[NSUserDefaults standardUserDefaults]
                         valueForKeyPath:FVSForceSetup] boolValue];
@@ -269,20 +208,13 @@ that you activate FileVault before you can login to this workstation. Please \
 click the enable button to continue."];
     }
     
-    // Setup the main window
-    // Are we running as root?
-    uid_t realuid = getuid();
     
-    if (realuid == 0) {
-        
-        [_window makeKeyAndOrderFront:NSApp];
-        [_window setCanBecomeVisibleWithoutLogin:YES];
-        [_window setLevel:2147483631];
-        [_window orderFrontRegardless];
-        [_window makeKeyWindow];
-        [_window becomeMainWindow];
-    }
-    
+    [_window makeKeyAndOrderFront:NSApp];
+    [_window setCanBecomeVisibleWithoutLogin:YES];
+    [_window setLevel:2147483631];
+    [_window orderFrontRegardless];
+    [_window makeKeyWindow];
+    [_window becomeMainWindow];
     [_window center];
     
     // Is FileVault enabled?
@@ -300,4 +232,35 @@ click the enable button to continue."];
     }
 }
 
+- (void)restart
+{
+    NSXPCConnection *connection = [[NSXPCConnection alloc]
+                                   initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
+    
+    connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
+    connection.exportedInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperProgress)];
+    connection.exportedObject = self;
+    [connection resume];
+    [[connection remoteObjectProxy] restartByHelper];
+    [connection invalidate];
+    [_window close];
+}
+
+-(void)startHelper{
+    NSXPCConnection *connection = [[NSXPCConnection alloc] initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
+    
+    connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
+    [connection resume];
+    [[connection remoteObjectProxy] startHelper];
+    [connection invalidate];
+}
+
+-(void)quitHelper{
+    NSXPCConnection *connection = [[NSXPCConnection alloc] initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
+    
+    connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
+    [connection resume];
+    [[connection remoteObjectProxy] quitHelper];
+    [connection invalidate];
+}
 @end

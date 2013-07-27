@@ -35,15 +35,7 @@ static float vigourOfShake   = 0.02f;
 - (id)init
 {
     self = [super initWithWindowNibName:@"FVSSetupWindowController"];
-    
-    username = [[NSUserDefaults standardUserDefaults] objectForKey:FVSUsername];
-    
-    int result = seteuid(0);
-    if (!result == 0) {
-        // NSLog(@"Could not set UID, error: %i", result);
-        // exit(result);
-    }
-    
+        username = NSUserName();
     return self;
 }
 
@@ -148,7 +140,7 @@ static float vigourOfShake   = 0.02f;
     [_message setStringValue:@"Running..."];
     [_spinner startAnimation:self];
 
-    // Setup Task args
+    // Setup Task args here and pass over to the helper app
     NSMutableArray *task_args = [NSMutableArray arrayWithObjects:@"enable",
                                  @"-outputplist", @"-inputplist", nil];
     
@@ -162,72 +154,32 @@ static float vigourOfShake   = 0.02f;
         [task_args insertObject:@"-keychain" atIndex:1];
     }
         
-    // Property List Out
-    NSString *outputFile = @"/private/var/root/fdesetup_output.plist";
-    [[NSFileManager defaultManager] createFileAtPath:outputFile
-                                            contents:nil
-                                          attributes:nil];
-    NSFileHandle *outHandle = [NSFileHandle
-                               fileHandleForWritingAtPath:outputFile];
+    NSXPCConnection *connection = [[NSXPCConnection alloc]
+                                   initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
     
-    // The Property List for Input
-    NSDictionary *input = @{ @"Username" : name, @"Password" : passwordString };
-    
-    // Task Setup
-    NSTask *theTask = [[NSTask alloc] init];
-    [theTask setLaunchPath:@"/usr/bin/fdesetup"];
-    [theTask setArguments:task_args];
-    [theTask setStandardOutput:outHandle];
-    
-    NSPipe *errorPipe = [NSPipe pipe];
-    [theTask setStandardError:errorPipe];
-    
-    NSPipe *inputPipe = [NSPipe pipe];
-    [theTask setStandardInput:inputPipe];
-    NSFileHandle *writeHandle = [inputPipe fileHandleForWriting];
-    
-    // Task Run
-    [theTask launch];
-    
-    // Task Input
-    NSData *data = [NSPropertyListSerialization
-                    dataFromPropertyList:input
-                    format:NSPropertyListBinaryFormat_v1_0
-                    errorDescription:nil];
-    
-    [writeHandle writeData:data];
-    [writeHandle closeFile];
-    
-    // Task Error
-    NSString *error = [[NSString alloc]
-                       initWithData:[[errorPipe fileHandleForReading]
-                                     readDataToEndOfFile]
-                       encoding:NSUTF8StringEncoding];
-    
-    // If the last char of error is a newline, remove it
-    if ([error characterAtIndex:[error length] -1] == NSNewlineCharacter) {
-        error = [error substringToIndex:[error length] -1];
-    }
-    
-    // Clean up
-    [theTask waitUntilExit];
-    
-    // Close
-    int result = [theTask terminationStatus];
-    [self setSetupError:error];
-     
-    [NSApp endSheet:[self window] returnCode:result];
+    connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
+    connection.exportedInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperProgress)];
+    connection.exportedObject = self;
+    [connection resume];
+    [[connection remoteObjectProxy] runFileVaultSetupForUser:name withPassword:passwordString andSettings:task_args withReply:^(int result,NSString *error) {
+                                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                        
+                                        // If the last char of error is a newline, remove it
+                                        if ([error characterAtIndex:[error length] -1] == NSNewlineCharacter) {
+                                            [self setSetupError:[error substringToIndex:[error length] -1]];
+                                        }else{
+                                            [self setSetupError:error];
+                                        }
+
+                                        [NSApp endSheet:[self window] returnCode:result];
+
+                                    }];
+                                    [connection invalidate];
+                                }];
 }
 
 - (void)dealloc
 {
-    int result = seteuid([[[NSUserDefaults standardUserDefaults]
-              objectForKey:FVSUid] intValue]);
-
-    if (!result == 0) {
-        NSLog(@"Could not set UID, error: %i", result);
-        exit(result);
-    }
 }
 
 @end

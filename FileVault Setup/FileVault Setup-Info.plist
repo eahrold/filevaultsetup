@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>SMPrivilegedExecutables</key>
+	<dict>
+		<key>ca.sfu.its.filevaultsetup.helper</key>
+		<string>identifier ca.sfu.its.[[[PROJECT_NAME]]].helper and certificate leaf[subject.CN] = &quot;[[[FULL_CODE_SIGN_IDENTITY]]]&quot;</string>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
