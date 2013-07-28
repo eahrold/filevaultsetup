@@ -159,6 +159,7 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
 - (void)setupDidEndWithSuccess:(NSAlert *)alert
 {
     NSLog(@"Setup complete. Restarting...");
+    [self disableLaunchAgent];
     [_window orderOut:self];
     [self restart];
 }
@@ -166,6 +167,7 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
 - (void)setupDidEndWithAlreadyEnabled:(NSAlert *)alert
 {
     NSLog(@"FileVault is already enabled.");
+    [self disableLaunchAgent];
     [_window close];
 }
 
@@ -189,8 +191,11 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:
     (NSApplication *)theApplication
 {
-    [self quitHelper];
     return YES;
+}
+
+-(void)applicationWillTerminate:(NSNotification *)notification{
+    [self quitHelper];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -251,16 +256,38 @@ click the enable button to continue."];
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
     [connection resume];
-    [[connection remoteObjectProxy] startHelper];
+    [[connection remoteObjectProxy] helperStartSelf];
     [connection invalidate];
 }
 
 -(void)quitHelper{
+    NSLog(@"Quitting Helper");
     NSXPCConnection *connection = [[NSXPCConnection alloc] initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
     [connection resume];
-    [[connection remoteObjectProxy] quitHelper];
+    [[connection remoteObjectProxy] helperQuitSelf];
     [connection invalidate];
+}
+
+-(void)disableLaunchAgent{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *launchAgent = @"/Library/LaunchAgents/ca.sfu.its.filevaultsetup-launcher.plist";
+    
+    if (![fileManager fileExistsAtPath:launchAgent]){
+        return;
+    }
+    
+    // Task Setup
+    NSArray *task_args = [NSArray arrayWithObjects:@"unload",@"-w",launchAgent, nil];
+    NSTask *theTask = [[NSTask alloc] init];
+    [theTask setLaunchPath:@"/bin/launchctl"];
+    [theTask setArguments:task_args];
+    
+    NSPipe *errorPipe = [NSPipe pipe];
+    [theTask setStandardError:errorPipe];
+    
+    [theTask launch];
+    [theTask waitUntilExit];
 }
 @end

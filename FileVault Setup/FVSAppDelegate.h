@@ -42,8 +42,13 @@
 - (void)setupDidEndWithAlreadyEnabled:(NSAlert *)alert;
 - (void)setupDidEndWithNotRoot:(NSAlert *)alert;
 
+- (void)disableLaunchAgent;
+- (void)quitHelper;
+- (void)startHelper;
 - (void)restart;
+
 - (IBAction)enable:(id)sender;
 - (IBAction)noEnable:(id)sender;
+
 
 @end

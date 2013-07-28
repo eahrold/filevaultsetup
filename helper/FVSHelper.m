@@ -7,6 +7,7 @@
 //
 
 #import "FVSHelper.h"
+#import <syslog.h>
 
 
 @implementation FVSHelper
@@ -77,23 +78,22 @@
 -(void)restartByHelper;
 
 {
-    
     // Task Setup
     NSTask *theTask = [[NSTask alloc] init];
     [theTask setLaunchPath:@"/sbin/reboot"];
     
     // Task Run
-    [theTask launch];
-    
+    [theTask launch];    
 }
 
 
--(void)quitHelper{
+-(void)helperQuitSelf{
+    syslog(LOG_ALERT, "quitting helper");
     self.helperToolShouldQuit = YES;
 }
 
--(void)startHelper{
-    
+-(void)helperStartSelf{
+    //nothing here, just brings the helper up.
 }
 
 //----------------------------------------

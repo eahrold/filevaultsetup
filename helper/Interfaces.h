@@ -11,10 +11,11 @@
 
 @protocol FVSHelperAgent <NSObject>
 
--(void)quitHelper;
--(void)startHelper;
+-(void)helperQuitSelf;
+-(void)helperStartSelf;
 
 -(void)restartByHelper;
+
 
 -(void)runFileVaultSetupForUser:(NSString *)name
                     withPassword:(NSString *)passwordString

@@ -27,6 +27,16 @@
 		BEF0DCA417A3BCBC00B66527 /* ca.sfu.its.filevaultsetup.helper in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEF0DC8F17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		BE2FA04717A5A24C007DA07C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 199337E616E6EE030029B411 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BEF0DC8E17A3557C00B66527;
+			remoteInfo = ca.sfu.its.filevaultsetup.helper;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		BEF0DCA317A3BCA600B66527 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -213,12 +223,12 @@
 				199337EA16E6EE030029B411 /* Sources */,
 				199337EB16E6EE030029B411 /* Frameworks */,
 				199337EC16E6EE030029B411 /* Resources */,
-				BE8642A917A403CC008F523C /* ShellScript */,
 				BEF0DCA317A3BCA600B66527 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BE2FA04817A5A24C007DA07C /* PBXTargetDependency */,
 			);
 			name = "FileVault Setup";
 			productName = "FileVault Setup";
@@ -229,7 +239,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEF0DC9B17A3557C00B66527 /* Build configuration list for PBXNativeTarget "ca.sfu.its.filevaultsetup.helper" */;
 			buildPhases = (
-				BE8642A817A403AA008F523C /* ShellScript */,
 				BEF0DC8B17A3557C00B66527 /* Sources */,
 				BEF0DC8C17A3557C00B66527 /* Frameworks */,
 			);
@@ -285,35 +294,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		BE8642A817A403AA008F523C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env ruby";
-			shellScript = "# Generic preprocessing for ${ENV_VAR} with output to the build dir.\n\nrequire 'cgi'\nrequire 'fileutils'\n\nmissing_keys = ['BUILD_DIR', 'CODE_SIGN_IDENTITY', 'PREPROCESS_FILES', 'PREPROCESS_DIR'] - ENV.keys\nraise \"Missing required ENV values: #{missing_keys.inspect}\" if missing_keys.size > 0\n\n# SMJ_PREPROCESS_FILES is a comma-separated list of *relative* file paths to preprocess\n#  and spit out into the SMJ_PREPROCESS_DIR (w/ the same relative paths as given)\nfiles_to_preprocess = ENV['PREPROCESS_FILES'].split(',').map(&:strip)\n\n\n# Environment Cleanup\n# -------------------\ndummy_path = \"#{ENV['BUILD_DIR']}/CodeSigningDummy\"\n\nidentity = ENV['CODE_SIGN_IDENTITY']\n# If you use the generic code signing identity, chances are that it'll conflict.\nidentity = \"#{identity}:\" if identity.end_with? ' Developer'\n\n# We can't seem to get direct access to the code signing certificate that Xcode has\n# selected at this point :(\n`touch #{dummy_path}`\n`codesign --force --sign \"#{identity}\" \"#{dummy_path}\"`\nresult = `codesign --display --verbose --verbose \"#{dummy_path}\" 2>&1`\n`rm #{dummy_path}`\n\nENV['FULL_CODE_SIGN_IDENTITY'] = result[/Authority\\=(.*#{Regexp.escape(identity)}.*)/, 1]\n\n\n# Actual Preprocessing\n# --------------------\n\nfiles_to_preprocess.each do |path|\ntarget_path = File.join(ENV['PREPROCESS_DIR'], path)\nFileUtils.mkpath File.dirname(target_path)\n\nopen(path) do |input|\nopen(target_path, 'w') do |output|\n# Specify macros via ${VAR_NAME} in the preprocessed file.  Same as regular\n# Info.plist preprocessing.\noutput.write input.read.gsub(/\\$\\{([A-Z_]+)\\}/) { CGI.escapeHTML(ENV[$1]) }\nend\nputs target_path\nend\nend";
-		};
-		BE8642A917A403CC008F523C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env ruby";
-			shellScript = "# Postprocessing for your info.plist.  Primarily so that we can inject your full dev certificate name.\n\nrequire 'cgi'\nrequire 'fileutils'\n\nmissing_keys = ['BUILD_DIR', 'CODE_SIGN_IDENTITY', 'TARGET_BUILD_DIR', 'INFOPLIST_PATH'] - ENV.keys\nraise \"Missing required ENV values: #{missing_keys.inspect}\" if missing_keys.size > 0\n\nfiles_to_postprocess = [ENV['INFOPLIST_PATH']]\n\n\n# FULL_CODE_SIGN_IDENTITY\n# -----------------------\ndummy_path = \"#{ENV['BUILD_DIR']}/CodeSigningDummy\"\n\nidentity = ENV['CODE_SIGN_IDENTITY']\n# If you use the generic code signing identity, chances are that it'll conflict.\nidentity = \"#{identity}:\" if identity.end_with? ' Developer'\n\n# We can't seem to get direct access to the code signing certificate that Xcode has\n# selected at this point :(\n`touch #{dummy_path}`\n`codesign --force --sign \"#{identity}\" \"#{dummy_path}\"`\nresult = `codesign --display --verbose --verbose \"#{dummy_path}\" 2>&1`\n`rm #{dummy_path}`\n\nENV['FULL_CODE_SIGN_IDENTITY'] = result[/Authority\\=(.*#{Regexp.escape(identity)}.*)/, 1]\n\n\n# Actual Preprocessing\n# --------------------\n\nfiles_to_postprocess.each do |path|\ntarget_path = File.join(ENV['TARGET_BUILD_DIR'], path)\n\ninput = open(target_path).read\nopen(target_path, 'w') do |output|\n# Specify macros via [[[VAR_NAME]]] to avoid clashes w/ regular plist preprocessing.\noutput.write input.gsub(/\\[\\[\\[([A-Z_]+)\\]\\]\\]/) { CGI.escapeHTML(ENV[$1]) }\nend\nend";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		199337EA16E6EE030029B411 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -335,6 +315,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BE2FA04817A5A24C007DA07C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BEF0DC8E17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */;
+			targetProxy = BE2FA04717A5A24C007DA07C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		199337FA16E6EE030029B411 /* InfoPlist.strings */ = {
@@ -426,7 +414,7 @@
 		1993380C16E6EE030029B411 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FileVault Setup/FileVault Setup-Prefix.pch";
@@ -440,7 +428,7 @@
 		1993380D16E6EE030029B411 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FileVault Setup/FileVault Setup-Prefix.pch";
@@ -454,7 +442,7 @@
 		BEF0DC9917A3557C00B66527 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "helper/helper-Prefix.pch";
 				INFOPLIST_FILE = "helper/FVSHelper-Info.plist";
@@ -481,7 +469,7 @@
 		BEF0DC9A17A3557C00B66527 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "helper/helper-Prefix.pch";
 				INFOPLIST_FILE = "helper/FVSHelper-Info.plist";
