@@ -161,7 +161,7 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
     NSLog(@"Setup complete. Restarting...");
     [self disableLaunchAgent];
     [_window orderOut:self];
-    [self restart];
+    //[self restart];
 }
 
 - (void)setupDidEndWithAlreadyEnabled:(NSAlert *)alert
@@ -261,7 +261,6 @@ click the enable button to continue."];
 }
 
 -(void)quitHelper{
-    NSLog(@"Quitting Helper");
     NSXPCConnection *connection = [[NSXPCConnection alloc] initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
@@ -271,17 +270,16 @@ click the enable button to continue."];
 }
 
 -(void)disableLaunchAgent{
-    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *launchAgent = @"/Library/LaunchAgents/ca.sfu.its.filevaultsetup-launcher.plist";
-    
-    if (![fileManager fileExistsAtPath:launchAgent]){
+    if (![[NSFileManager defaultManager] fileExistsAtPath:launchAgent]){
         return;
     }
     
     // Task Setup
-    NSArray *task_args = [NSArray arrayWithObjects:@"unload",@"-w",launchAgent, nil];
     NSTask *theTask = [[NSTask alloc] init];
     [theTask setLaunchPath:@"/bin/launchctl"];
+    
+    NSArray *task_args = [NSArray arrayWithObjects:@"unload",@"-w",launchAgent, nil];
     [theTask setArguments:task_args];
     
     NSPipe *errorPipe = [NSPipe pipe];

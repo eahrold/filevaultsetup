@@ -14,11 +14,13 @@
 
 @synthesize helperToolShouldQuit;
 
-- (void)runFileVaultSetupForUser:(NSString *)name
+- (void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
                      andSettings:(NSMutableArray *)settings
                        withReply:(void (^)(int result,NSString *error))reply{
     
+    syslog(LOG_ALERT, "Running  fdesetup...");
+
     //set up task args
     NSArray *task_args = [NSArray arrayWithArray:settings];
     
@@ -78,6 +80,8 @@
 -(void)restartByHelper;
 
 {
+    syslog(LOG_ALERT, "Restarting Computer");
+
     // Task Setup
     NSTask *theTask = [[NSTask alloc] init];
     [theTask setLaunchPath:@"/sbin/reboot"];
@@ -93,9 +97,14 @@
 }
 
 -(void)helperStartSelf{
+    syslog(LOG_ALERT, "Starting Helper");
     //nothing here, just brings the helper up.
 }
 
+-(void)helperCheckSelf{
+    syslog(LOG_ALERT, "Checking Helper");
+    //nothing here, just brings the helper up.
+}
 //----------------------------------------
 // Helper Singleton
 //----------------------------------------

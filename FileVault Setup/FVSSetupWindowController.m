@@ -90,23 +90,29 @@ static float vigourOfShake   = 0.02f;
 
 - (BOOL)passwordMatch:(NSString *)password forUsername:(NSString *)name
 {
+    NSLog(@"Checking Password step 1");
     BOOL match = NO;
 	ODSessionRef session = NULL;
 	ODNodeRef node = NULL;
 	ODRecordRef	rec = NULL;
     
+    NSLog(@"Checking Password step 2");
     session = ODSessionCreate(NULL, NULL, NULL);
     node = ODNodeCreateWithNodeType(NULL,
                                     session,
                                     kODNodeTypeAuthentication,
                                     NULL);
+
+    NSLog(@"Checking Password step 3");
     if (node) {
         rec = ODNodeCopyRecord(node,
                                kODRecordTypeUsers,
                                (__bridge CFStringRef)(name),
                                NULL,
                                NULL);
-        
+      
+  
+    NSLog(@"Checking Password step 4");
         if (rec) {
             match = ODRecordVerifyPassword(rec,
                                            (__bridge CFStringRef)(password),
@@ -118,6 +124,7 @@ static float vigourOfShake   = 0.02f;
     }
 
     CFRelease(session);
+    NSLog(@"Checking Password step RETURN");
     return match;
 }
 
@@ -161,9 +168,9 @@ static float vigourOfShake   = 0.02f;
     connection.exportedInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperProgress)];
     connection.exportedObject = self;
     [connection resume];
-    [[connection remoteObjectProxy] runFileVaultSetupForUser:name withPassword:passwordString andSettings:task_args withReply:^(int result,NSString *error) {
+    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:task_args withReply:^(int result,NSString *error) {
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                        
+                                        NSLog(@"did task and got rc: %d",result);
                                         // If the last char of error is a newline, remove it
                                         if ([error characterAtIndex:[error length] -1] == NSNewlineCharacter) {
                                             [self setSetupError:[error substringToIndex:[error length] -1]];

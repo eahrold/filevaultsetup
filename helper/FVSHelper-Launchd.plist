@@ -4,10 +4,10 @@
 <dict>
 	<key>MachServices</key>
 	<dict>
-		<key>${PRODUCT_NAME}</key>
+		<key>ca.sfu.its.filevaultsetup.helper</key>
 		<true/>
 	</dict>
 	<key>Label</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>ca.sfu.its.filevaultsetup.helper</string>
 </dict>
 </plist>
