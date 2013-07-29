@@ -17,7 +17,7 @@
 - (void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
                      andSettings:(NSMutableArray *)settings
-                       withReply:(void (^)(int result,NSString *error))reply{
+                       withReply:(void (^)(NSString* result,NSString *error))reply{
     
     syslog(LOG_ALERT, "Running  fdesetup...");
 
@@ -71,8 +71,9 @@
     [theTask waitUntilExit];
     
     // Close
-    int result = [theTask terminationStatus];
-    //[self setSetupError:error];
+    NSString* result = [NSString stringWithFormat:@"%d",[theTask terminationStatus]];
+            // int won't go over NSXPC so make it a NSString and fix on other side.
+
     reply(result,error);
 
 }

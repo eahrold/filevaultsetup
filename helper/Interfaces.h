@@ -20,7 +20,7 @@
 -(void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
                      andSettings:(NSMutableArray *)settings
-                       withReply:(void (^)(int result,NSString *error))reply;
+                       withReply:(void (^)(NSString* result,NSString *error))reply;
 
 @end
 
