@@ -21,6 +21,7 @@
 		1993381416E6F7000029B411 /* FVSSetupWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1993381216E6F7000029B411 /* FVSSetupWindowController.xib */; };
 		19EE18F316F6DD3F00134C7B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19EE18F216F6DD3F00134C7B /* IOKit.framework */; };
 		19EE18F516F6DDE800134C7B /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19EE18F416F6DDE800134C7B /* DiskArbitration.framework */; };
+		BE8B4CE317A6959F00619DC3 /* AgentLaunch.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE8B4CE217A694A000619DC3 /* AgentLaunch.sh */; };
 		BEF0DC9117A3557C00B66527 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEF0DC9017A3557C00B66527 /* Foundation.framework */; };
 		BEF0DC9417A3557C00B66527 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF0DC9317A3557C00B66527 /* main.m */; };
 		BEF0DCA017A3574000B66527 /* FVSHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = BEF0DC9F17A3573F00B66527 /* FVSHelper.m */; };
@@ -44,6 +45,7 @@
 			dstPath = Contents/Library/LaunchServices;
 			dstSubfolderSpec = 7;
 			files = (
+				BE8B4CE317A6959F00619DC3 /* AgentLaunch.sh in CopyFiles */,
 				BEF0DCA417A3BCBC00B66527 /* ca.sfu.its.filevaultsetup.helper in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +76,7 @@
 		1993381216E6F7000029B411 /* FVSSetupWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FVSSetupWindowController.xib; sourceTree = "<group>"; };
 		19EE18F216F6DD3F00134C7B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		19EE18F416F6DDE800134C7B /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
+		BE8B4CE217A694A000619DC3 /* AgentLaunch.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = AgentLaunch.sh; sourceTree = "<group>"; };
 		BEF0DC8F17A3557C00B66527 /* ca.sfu.its.filevaultsetup.helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ca.sfu.its.filevaultsetup.helper; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEF0DC9017A3557C00B66527 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BEF0DC9317A3557C00B66527 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -200,6 +203,7 @@
 				BEF0DCA117A3B7FB00B66527 /* FVSHelper-Launchd.plist */,
 				BEF0DC9317A3557C00B66527 /* main.m */,
 				BEF0DC9617A3557C00B66527 /* helper-Prefix.pch */,
+				BE8B4CE217A694A000619DC3 /* AgentLaunch.sh */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -458,9 +462,6 @@
 					__launchd_plist,
 					"helper/FVSHelper-Launchd.plist",
 				);
-				PARENT_APPLICATION_IDENTIFIER = ca.sfu.its.filevaultsetup;
-				PREPROCESS_DIR = "$(BUILD_DIR)/Preprocessed";
-				PREPROCESS_FILES = "helper/FVSHelper-Info.plist, helper/FVSHelper-Launchd.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -485,9 +486,6 @@
 					__launchd_plist,
 					"helper/FVSHelper-Launchd.plist",
 				);
-				PARENT_APPLICATION_IDENTIFIER = ca.sfu.its.filevaultsetup;
-				PREPROCESS_DIR = "$(BUILD_DIR)/Preprocessed";
-				PREPROCESS_FILES = "helper/FVSHelper-Info.plist, helper/FVSHelper-Launchd.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
