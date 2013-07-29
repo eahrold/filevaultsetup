@@ -13,16 +13,15 @@
 
 -(void)helperQuitSelf;
 -(void)helperStartSelf;
--(void)helperCheckSelf;
 
 -(void)restartByHelper;
-
 -(void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
-                     andSettings:(NSMutableArray *)settings
+                     andSettings:(NSArray *)settings
                        withReply:(void (^)(NSString* result,NSString *error))reply;
 
 @end
+
 
 @protocol FVSHelperProgress
 

@@ -16,7 +16,7 @@
 
 - (void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
-                     andSettings:(NSMutableArray *)settings
+                     andSettings:(NSArray *)settings
                        withReply:(void (^)(NSString* result,NSString *error))reply{
     
     syslog(LOG_ALERT, "Running  fdesetup...");
@@ -102,10 +102,6 @@
     //nothing here, just brings the helper up.
 }
 
--(void)helperCheckSelf{
-    syslog(LOG_ALERT, "Checking Helper");
-    //nothing here, just brings the helper up.
-}
 //----------------------------------------
 // Helper Singleton
 //----------------------------------------

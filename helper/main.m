@@ -8,19 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import "FVSHelper.h"
+#define kHelperName @"ca.sfu.its.filevaultsetup.helper"
+
 
 static const NSTimeInterval kHelperCheckInterval = 1.0; // how often to check whether to quit
 
 
 int main(int argc, const char *argv[])
 {
-    // LaunchServices automatically registers a mach service of the same
-	// name as our bundle identifier.  This is the same as MachService key in
-    // the SMJobBlessHelper-Launchd.plist
-    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
-    NSXPCListener *listener = [[NSXPCListener alloc] initWithMachServiceName:bundleID];
     
-    // Create the delegate of the listener.
+    // Create the listener and delegate.
+    NSXPCListener *listener = [[NSXPCListener alloc] initWithMachServiceName:kHelperName];
+
     FVSHelper *sharedAgent = [FVSHelper new];
     listener.delegate = sharedAgent;
     
