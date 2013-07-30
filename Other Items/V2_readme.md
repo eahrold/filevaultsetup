@@ -11,11 +11,11 @@ Permission should be 644
 To user the launch Agent the FileVault Setup.app needs to be in the /Applications/ folder.
 If you want to place it somewhere else, modify the LaunchAgent accordingly.
 
-right now the launch agent calls a script to open the FVS.app rather than directly calling the App's executalbe.  If LaunchD calls the app's exec directly it won't allow Mach messaging to the helper tool.  
+right now the launch agent calls a script to open the FVS.app rather than directly calling the App's executable.  If LaunchD calls the app's exec directly it won't allow Mach messaging to the helper tool.  
  
 
 ###The helper binary 
-Should be installed in /Library/PrivilegedHelperTools/
+Needs to be installed in /Library/PrivilegedHelperTools/
 
 
 ### Notes on Code Signing
@@ -23,8 +23,7 @@ This is currently set up for code signing, althought it works w/o.
 You will need to create a Code signing certificate named Mac Developer. 
 
 You'll also want to change the FVSHelper-Info.plist and FileVault Setup-Info.plist  
-to correctly represent your Certificate Leaf.  
-in the  
+to correctly represent your Certificate Leaf in the...  
 
 	"Clients allowed to add and remove tool" 
 	
