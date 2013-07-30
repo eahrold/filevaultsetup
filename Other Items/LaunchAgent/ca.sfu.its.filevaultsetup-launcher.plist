@@ -8,7 +8,7 @@
 	<true/>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Applications/FileVault Setup.app/Contents/MacOS/FileVault Setup</string>
+		<string>/Applications/FileVault Setup.app/Contents/Resources/Contents/Library/LaunchServices/AgentLaunch.sh</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
