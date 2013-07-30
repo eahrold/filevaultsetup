@@ -26,5 +26,7 @@ extern NSString * const FVSDoNotAskForSetup;
 extern NSString * const FVSForceSetup;
 extern NSString * const FVSUseKeychain;
 extern NSString * const FVSCreateRecoveryKey;
+extern NSString * const FVSEscrowKeyServer;
+
 
 #endif

@@ -163,13 +163,41 @@ static float vigourOfShake   = 0.02f;
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
     [connection resume];
-    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:settings withReply:^(NSString* result,NSString *error) {
+    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:settings withReply:^(NSString* result,NSString *error,NSDictionary* key) {
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                         [self setSetupError:error];
-                                        [NSApp endSheet:[self window] returnCode:[result intValue]]; //NSXPC won't take int
+                                        // if fde was successfull try and upload key to a server.
+                                        if ([result intValue] == 0)
+                                            [self sendKeyToServer:key];
+                                        else
+                                            [NSApp endSheet:[self window] returnCode:[result intValue]]; //NSXPC won't take int
                                     }];
                                     [connection invalidate];
                                 }];
+}
+
+-(void)sendKeyToServer:(NSDictionary*)key{
+    
+    NSString* server = [[NSUserDefaults standardUserDefaults] valueForKeyPath:FVSEscrowKeyServer];
+    NSXPCConnection *connection = [[NSXPCConnection alloc]
+                                   initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
+    
+    connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
+    [connection resume];
+    [[connection remoteObjectProxy] escrowKeyForUser:username onServer:server withFile:key withReply:^(NSError *error) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            int rc;
+            if (!error)
+                rc = 0;
+            else
+                rc = 1;                
+            [NSApp endSheet:[self window] returnCode:rc]; //NSXPC won't take int
+        }];
+        [connection invalidate];
+    }];
+
+    
+    
 }
 
 - (void)dealloc

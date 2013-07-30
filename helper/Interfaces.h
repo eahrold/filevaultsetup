@@ -13,12 +13,15 @@
 
 -(void)helperQuitSelf;
 -(void)helperStartSelf;
-
 -(void)restartByHelper;
+
 -(void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
                      andSettings:(NSArray *)settings
-                       withReply:(void (^)(NSString* result,NSString *error))reply;
+                       withReply:(void (^)(NSString* result,NSString *error,NSDictionary *key))reply;
+
+-(void)escrowKeyForUser:(NSString*)user onServer:(NSString*)server
+               withFile:(NSDictionary*)key withReply:(void (^)(NSError *error))reply;
 
 @end
 

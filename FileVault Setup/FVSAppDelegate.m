@@ -28,6 +28,8 @@ NSString * const FVSDoNotAskForSetup     = @"FVSDoNotAskForSetup";
 NSString * const FVSForceSetup           = @"FVSForceSetup";
 NSString * const FVSUseKeychain          = @"FVSUseKeychain";
 NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
+NSString * const FVSEscrowKeyServer      = @"FVSEscrowKeyServer";
+
 
 @implementation FVSAppDelegate
 
@@ -40,10 +42,11 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
                       forKey:FVSDoNotAskForSetup];
     [defaultValues setObject:[NSNumber numberWithBool:NO]
                       forKey:FVSForceSetup];
-    [defaultValues setObject:[NSNumber numberWithBool:YES]
+    [defaultValues setObject:[NSNumber numberWithBool:NO]
                       forKey:FVSUseKeychain];
     [defaultValues setObject:[NSNumber numberWithBool:YES]
                       forKey:FVSCreateRecoveryKey];
+
 
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultValues];

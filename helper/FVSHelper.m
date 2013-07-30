@@ -17,7 +17,7 @@
 - (void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
                      andSettings:(NSArray *)settings
-                       withReply:(void (^)(NSString* result,NSString *error))reply{
+                       withReply:(void (^)(NSString* result,NSString *error,NSDictionary *key))reply{
     
     syslog(LOG_ALERT, "Running  fdesetup...");
 
@@ -31,7 +31,7 @@
                                           attributes:nil];
     NSFileHandle *outHandle = [NSFileHandle
                                fileHandleForWritingAtPath:outputFile];
-    
+       
     // The Property List for Input
     NSDictionary *input = @{ @"Username" : name, @"Password" : passwordString };
     
@@ -57,6 +57,7 @@
                     format:NSPropertyListBinaryFormat_v1_0
                     errorDescription:nil];
     
+    
     [writeHandle writeData:data];
     [writeHandle closeFile];
     
@@ -70,17 +71,45 @@
     // Clean up
     [theTask waitUntilExit];
     
-    // Close
+    // Get reply items
     NSString* result = [NSString stringWithFormat:@"%d",[theTask terminationStatus]];
             // int won't go over NSXPC so make it a NSString and fix on other side.
-
-    reply(result,error);
+    
+    NSDictionary *key = [NSDictionary dictionaryWithContentsOfFile:outputFile];
+    
+    reply(result,error,key);
 
 }
 
--(void)restartByHelper;
-
-{
+-(void)escrowKeyForUser:(NSString*)user onServer:(NSString*)server
+               withFile:(NSDictionary*)key withReply:(void (^)(NSError *error))reply{
+    
+    NSString* serialNumber = [key valueForKey:@"SerialNumber"];
+    NSString* recoveryKey = [key valueForKey:@"RecoveryKey"];
+    NSString* hostName = [[NSHost currentHost] localizedName];
+    
+    NSString *stringData=[NSString stringWithFormat:@"serial=%@&recovery_password=%@&username=%@&macname=%@",serialNumber,recoveryKey,user,hostName];
+    
+    
+    // Create the request.
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:server]];
+    
+    // set as POST request
+    request.HTTPMethod = @"POST";
+    
+    // set header fields
+    [request setValue:@"application/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    // Convert data and set request's HTTPBody property
+    NSData *requestBodyData = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    request.HTTPBody = requestBodyData;
+    
+    // Create url connection and fire request
+    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+}
+-(void)restartByHelper{
+    
     syslog(LOG_ALERT, "Restarting Computer");
 
     // Task Setup
