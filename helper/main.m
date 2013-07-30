@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FVSHelper.h"
-#define kHelperName @"ca.sfu.its.filevaultsetup.helper"
-
+#import "Interfaces.h"
 
 static const NSTimeInterval kHelperCheckInterval = 1.0; // how often to check whether to quit
 
