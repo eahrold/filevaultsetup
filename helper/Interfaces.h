@@ -21,7 +21,7 @@
                        withReply:(void (^)(NSString* result,NSString *error,NSDictionary *key))reply;
 
 -(void)escrowKeyForUser:(NSString*)user onServer:(NSString*)server
-               withFile:(NSDictionary*)key withReply:(void (^)(NSError *error))reply;
+               withKeys:(NSDictionary*)keys withReply:(void (^)(NSError *error))reply;
 
 @end
 

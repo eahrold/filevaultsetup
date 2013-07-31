@@ -163,35 +163,45 @@ static float vigourOfShake   = 0.02f;
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
     [connection resume];
-    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:settings withReply:^(NSString* result,NSString *error,NSDictionary* key) {
+    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:settings withReply:^(NSString* result,NSString *error,NSDictionary* keys) {
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                        [self setSetupError:error];
-                                        // if fde was successfull try and upload key to a server.
-                                        if ([result intValue] == 0)
-                                            [self sendKeyToServer:key];
-                                        else
-                                            [NSApp endSheet:[self window] returnCode:[result intValue]]; //NSXPC won't take int
+                                       
+                                        NSString* server = [[NSUserDefaults standardUserDefaults] valueForKeyPath:FVSEscrowKeyServer];
+                                        
+                                        int rc = [result intValue];
+                                        
+                                        // if fde was successfull and a escrow server is specified, try and upload the key .
+                                        if (rc == 0){
+                                            if(server && keys)
+                                                [self sendKeyToServer:server withKeys:keys];
+                                            else
+                                                [NSApp endSheet:[self window] returnCode:rc];
+                                        }else{
+                                            [self setSetupError:error];
+                                            [NSApp endSheet:[self window] returnCode:rc];
+                                        }
                                     }];
                                     [connection invalidate];
                                 }];
 }
 
--(void)sendKeyToServer:(NSDictionary*)key{
+-(void)sendKeyToServer:(NSString*)server withKeys:(NSDictionary*)keys{
     
-    NSString* server = [[NSUserDefaults standardUserDefaults] valueForKeyPath:FVSEscrowKeyServer];
     NSXPCConnection *connection = [[NSXPCConnection alloc]
                                    initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
     [connection resume];
-    [[connection remoteObjectProxy] escrowKeyForUser:username onServer:server withFile:key withReply:^(NSError *error) {
+    [[connection remoteObjectProxy] escrowKeyForUser:username onServer:server withKeys:keys withReply:^(NSError *error) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             int rc;
-            if (!error)
+            if (!error){
                 rc = 0;
-            else
-                rc = 1;                
-            [NSApp endSheet:[self window] returnCode:rc]; //NSXPC won't take int
+            }else{
+                [self setSetupError:[error localizedDescription]];
+                rc = 2;
+            }
+            [NSApp endSheet:[self window] returnCode:rc];
         }];
         [connection invalidate];
     }];

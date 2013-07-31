@@ -17,7 +17,7 @@
 - (void)runFileVaultSetupHelperForUser:(NSString *)name
                     withPassword:(NSString *)passwordString
                      andSettings:(NSArray *)settings
-                       withReply:(void (^)(NSString* result,NSString *error,NSDictionary *key))reply{
+                       withReply:(void (^)(NSString* result,NSString *error,NSDictionary *keys))reply{
     
     syslog(LOG_ALERT, "Running  fdesetup...");
 
@@ -70,22 +70,29 @@
    
     // Clean up
     [theTask waitUntilExit];
+    [outHandle closeFile];
+
     
     // Get reply items
     NSString* result = [NSString stringWithFormat:@"%d",[theTask terminationStatus]];
             // int won't go over NSXPC so make it a NSString and fix on other side.
     
-    NSDictionary *key = [NSDictionary dictionaryWithContentsOfFile:outputFile];
     
-    reply(result,error,key);
+//    NSString *error = @"bypassing the actual test";
+//    NSString* result = @"0";
+    NSDictionary *keys = [NSDictionary dictionaryWithContentsOfFile:outputFile];
+    
+    reply(result,error,keys);
 
 }
 
 -(void)escrowKeyForUser:(NSString*)user onServer:(NSString*)server
-               withFile:(NSDictionary*)key withReply:(void (^)(NSError *error))reply{
+               withKeys:(NSDictionary*)keys withReply:(void (^)(NSError *error))reply{
+    NSError* error = nil;
+    NSURLResponse* response = nil;
     
-    NSString* serialNumber = [key valueForKey:@"SerialNumber"];
-    NSString* recoveryKey = [key valueForKey:@"RecoveryKey"];
+    NSString* serialNumber = [keys valueForKey:@"SerialNumber"];
+    NSString* recoveryKey = [keys valueForKey:@"RecoveryKey"];
     NSString* hostName = [[NSHost currentHost] localizedName];
     
     NSString *stringData=[NSString stringWithFormat:@"serial=%@&recovery_password=%@&username=%@&macname=%@",serialNumber,recoveryKey,user,hostName];
@@ -105,8 +112,10 @@
     request.HTTPBody = requestBodyData;
     
     // Create url connection and fire request
-    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    //NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
+    reply(error);
 }
 -(void)restartByHelper{
     

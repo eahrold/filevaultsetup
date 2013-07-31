@@ -135,6 +135,11 @@ NSString * const FVSEscrowKeyServer      = @"FVSEscrowKeyServer";
         theSelector = @selector(setupDidEndWithSuccess:);
         [alert setMessageText:@"Restart Required"];
         [alert setInformativeText:@"Click OK to restart and complete the setup."];
+    }else if (result == 2){
+        // Success, but couldn't uplaod Key to server
+        theSelector = @selector(setupDidEndWithKeyNeedsUploading:);
+        [alert setMessageText:@"Restart Required"];
+        [alert setInformativeText:@"Drive Encryption succeeded, but we couldn't upload the key to the server.  Click OK to restart and complete the setup."];
     } else {
         // Failure
         [alert setAlertStyle:NSCriticalAlertStyle];
@@ -161,6 +166,14 @@ NSString * const FVSEscrowKeyServer      = @"FVSEscrowKeyServer";
 }
 
 - (void)setupDidEndWithSuccess:(NSAlert *)alert
+{
+    NSLog(@"Setup complete. Restarting...");
+    [self disableLaunchAgent];
+    [_window orderOut:self];
+    [self restart];
+}
+
+- (void)setupDidEndWithKeyNeedsUploading:(NSAlert *)alert
 {
     NSLog(@"Setup complete. Restarting...");
     [self disableLaunchAgent];
@@ -228,6 +241,7 @@ click the enable button to continue."];
     
     // Is FileVault enabled?
     BOOL fvstate = [FVSAppDelegate rootVolumeIsEncrypted];
+    
     
     if (fvstate == YES) {
         // ALERT
