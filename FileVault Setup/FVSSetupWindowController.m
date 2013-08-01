@@ -143,8 +143,7 @@ static float vigourOfShake   = 0.02f;
     [_spinner startAnimation:self];
 
     // Setup Task args here and pass over to the helper app
-    NSMutableArray *task_args = [NSMutableArray arrayWithObjects:@"enable",
-                                 @"-outputplist", @"-inputplist", nil];
+    NSMutableArray *task_args = [NSMutableArray arrayWithObjects:@"enable", @"-outputplist", @"-inputplist", nil];
     
     if (![[[NSUserDefaults standardUserDefaults]
           valueForKeyPath:FVSCreateRecoveryKey] boolValue]) {
@@ -155,19 +154,19 @@ static float vigourOfShake   = 0.02f;
           valueForKeyPath:FVSUseKeychain] boolValue]) {
         [task_args insertObject:@"-keychain" atIndex:1];
     }
-        
+    
+    
+    NSArray* settings = [NSArray arrayWithArray:task_args];  // NSXPC also has issues with NSMutableArrays
+
     NSXPCConnection *connection = [[NSXPCConnection alloc]
                                    initWithMachServiceName:kHelperName options:NSXPCConnectionPrivileged];
     
     connection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperAgent)];
-    connection.exportedInterface = [NSXPCInterface interfaceWithProtocol:@protocol(FVSHelperProgress)];
-    connection.exportedObject = self;
     [connection resume];
-    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:task_args withReply:^(NSString* result,NSString *error) {
+    [[connection remoteObjectProxy] runFileVaultSetupHelperForUser:name withPassword:passwordString andSettings:settings withReply:^(NSString* result,NSString *error) {
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                         [self setSetupError:error];
-                                        [NSApp endSheet:[self window] returnCode:[result intValue]];
-
+                                        [NSApp endSheet:[self window] returnCode:[result intValue]]; //NSXPC won't take int
                                     }];
                                     [connection invalidate];
                                 }];

@@ -58,6 +58,7 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
           valueForKeyPath:FVSForceSetup] boolValue]) {
         if ([[[NSUserDefaults standardUserDefaults]
              valueForKeyPath:FVSDoNotAskForSetup] boolValue]) {
+            [NSApp disableLaunchAgent];
             exit(0);
         }
     }
@@ -161,7 +162,7 @@ NSString * const FVSCreateRecoveryKey    = @"FVSCreateRecoveryKey";
     NSLog(@"Setup complete. Restarting...");
     [self disableLaunchAgent];
     [_window orderOut:self];
-    //[self restart];
+    [self restart];
 }
 
 - (void)setupDidEndWithAlreadyEnabled:(NSAlert *)alert
